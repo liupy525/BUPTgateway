@@ -1,4 +1,4 @@
 BUPTgateway
 ===========
 
-login or logout the BUPT's gateway
+use python to login or logout the BUPT's gateway
