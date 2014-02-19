@@ -1,7 +1,13 @@
+#!/usr/local/env python
+# -*- coding: utf-8 -*-
+
 import urllib
 import urllib2
 import hashlib
-def login(url, usr, pwd):
+import re
+
+def login(usr, pwd, url = "http://gw.bupt.edu.cn"):
+    # 初始化表单
     data = {}
     data["DDDDD"] = usr
     data["upass"] = calpwd(pwd)
@@ -9,19 +15,37 @@ def login(url, usr, pwd):
     data["R2"] = "1"
     data["para"] = "00"
     data["0MKKey"] = "123456"
-    req=urllib2.Request(url)
     data = urllib.urlencode(data)
-    data
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor())
-    response = opener.open(req, data)
-    response.read()
-  
+    req=urllib2.Request(url, data)
+    response = urllib2.urlopen(req, data)
+    rsp = response.read()
+
+    temp = re.findall(r"You have successfully logged into our system.", rsp)
+    if not temp:
+        ip = re.findall(r"xsele=0;xip='(\d+\.\d+\.\d+\.\d+)\s*';", rsp)
+        ans = raw_input("该账号正在IP为：%s 的机器上使用，是否断开它的连接并重新输入用户名和密码登陆本机。(Y / N)\n" % ip[0])
+        if ans=='Y' or ans=='y':
+            data = {}
+            data["DDDDD"] = usr
+            data["upass"] = pwd
+            data["passplace"] = ""
+            data["AMKKey"] = ""
+            data = urllib.urlencode(data)
+            req=urllib2.Request(url+"/all.htm", data)
+            response = urllib2.urlopen(req, data)
+            rsp = response.read()
+            print "登陆成功"
+        else:
+            print "终止登陆，登录失败"
+    else:
+        print "登陆成功"
+
 def calpwd(init_pwd):
     pid = '1'
     calg='12345678'
     tmp = pid + init_pwd + calg
     pwd = hashlib.md5(tmp).hexdigest() + calg + pid
     return pwd
-  
-  
-login("http://10.3.8.211", "学号", "密码") 
+
+
+login("usrname", "password")
