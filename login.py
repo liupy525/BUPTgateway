@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/local/env python
 # -*- coding: utf-8 -*-
 
 import urllib
 import urllib2
 import hashlib
-import re
+import re, sys
 
 def login(usr, pwd, url = "http://gw.bupt.edu.cn"):
     # 初始化表单
@@ -47,5 +47,11 @@ def calpwd(init_pwd):
     pwd = hashlib.md5(tmp).hexdigest() + calg + pid
     return pwd
 
+if len(sys.argv)==3:
+    usrname = sys.argv[1]
+    passwd = sys.argv[2]
+else:
+    usrname = ''
+    passwd = ''
+login(usrname, passwd)
 
-login("usrname", "password")
