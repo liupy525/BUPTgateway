@@ -14,4 +14,5 @@ def logout(url="http://gw.bupt.edu.cn/F.html"):
     else:
         print "注销失败"
 
-logout()
+if __name__=='__main__':
+    logout()
